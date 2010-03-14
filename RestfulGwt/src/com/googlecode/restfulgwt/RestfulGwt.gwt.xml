@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='gwtrest'>*
+  <!-- Inherit the core Web Toolkit stuff.                        -->
+  <inherits name='com.google.gwt.user.User'/>
+
+  <!-- Other module inherits                                      -->
+	<generate-with class="com.googlecode.restfulgwt.generator.RestGenerator">
+		<when-type-assignable class="com.googlecode.restfulgwt.client.HasTokenHandling"/>
+	</generate-with>
+
+  <!-- Specify the paths for translatable code                    -->
+  <source path='client'/>
+  
+</module>
