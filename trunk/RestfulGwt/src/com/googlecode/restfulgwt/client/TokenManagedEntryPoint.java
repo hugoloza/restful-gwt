@@ -33,10 +33,6 @@ public class TokenManagedEntryPoint extends ArrayList<TokenResourceDeclaration> 
 		exec(History.getToken());
 	}
 	
-	public void addClass(Class<? extends HasTokenHandling> c) {
-		add((TokenResourceDeclaration)GWT.create(c));
-	}
-	
 	protected void exec(String token) {
 		try {
 			if(!tryExec(token)) {
