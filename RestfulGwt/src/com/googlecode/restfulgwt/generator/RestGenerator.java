@@ -58,7 +58,7 @@ public class RestGenerator extends Generator {
 			writer.println("        query = path.substring(qmarkPos+1);");
 			writer.println("        path = path.substring(0,qmarkPos);");
 			writer.println("}");
-			writer.println("final java.util.Map<String,String> queryMap = new java.util.HashMap<String,String>();");
+			writer.println("final com.googlecode.restfulgwt.client.SimpleMultivaluedMap<String,String> queryMap = new com.googlecode.restfulgwt.client.SimpleMultivaluedMap<String,String>();");
 			writer.println("for(String queryItem : query.split(\"&\")) {");
 			writer.println("	String[] kv = queryItem.split(\"=\");");
 			writer.println("	String key = \"\";");
@@ -67,7 +67,7 @@ public class RestGenerator extends Generator {
 			writer.println("		key = kv[0];");
 			writer.println("	if(kv.length > 1)");
 			writer.println("		value = kv[1];");
-			writer.println("	queryMap.put(key,value);");
+			writer.println("	queryMap.add(key,value);");
 			writer.println("}");
 			writer.println("String currentPath = path;");
 			Path classDefinedPath = type.findAnnotationInTypeHierarchy(Path.class);
@@ -217,13 +217,18 @@ public class RestGenerator extends Generator {
 		}
 		QueryParam queryParamAnno = f.getAnnotation(QueryParam.class);
 		if(queryParamAnno != null) {
-			valueExpression = "queryMap.get(\""+queryParamAnno.value()+"\")";
+			valueExpression = "queryMap.getFirst(\""+queryParamAnno.value()+"\")";
 			DefaultValue defaultValueAnno = f.getAnnotation(DefaultValue.class);
 			if(defaultValueAnno != null) {
 				String defaultValue = defaultValueAnno.value();
 				valueExpression = "("+valueExpression + " == null ? \"" +defaultValue + "\" : " + valueExpression+")";
 			}
 		}
+		JClassType multiMapType = oracle.findType("com.googlecode.restfulgwt.client.MultivaluedMap");
+		if(type.isClassOrInterface().isAssignableTo(multiMapType)) {
+			writer.println(var+" = queryMap;");
+		}
+
 		if(valueExpression == null)
 			return; // no annotation : not a field managed by the framwork
 		JClassType hasValueType = oracle.findType("com.google.gwt.user.client.ui.HasValue");
